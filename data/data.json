@@ -10,6 +10,20 @@
           "cover": "images/血色衣冠.png",
           "description": "简短描述第三方",
           "versions": []
+        },
+        {
+          "id": "mod-1781284956507-t43qv63zu",
+          "name": "大浪淘沙",
+          "cover": "images/大浪淘沙.jpeg",
+          "description": "简短描述",
+          "versions": []
+        },
+        {
+          "id": "mod-1781285060653-e82t3igkz",
+          "name": "PK2.2",
+          "cover": "images/PK2.2.jpg",
+          "description": "简短描述",
+          "versions": []
         }
       ]
     }
