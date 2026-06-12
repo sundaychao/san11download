@@ -1,0 +1,154 @@
+{
+  "categories": [
+    {
+      "id": "san11",
+      "name": "三国志11",
+      "mods": [
+        {
+          "id": "san11-original",
+          "name": "三国志11原版",
+          "cover": "",
+          "description": "三国志11原版游戏资源",
+          "versions": [
+            {
+              "id": "san11-v1",
+              "name": "三国志11 原版",
+              "content": "<h2>三国志11 原版</h2><p>三国志11（Romance of the Three Kingdoms 11）是由日本光荣公司开发并发行的一款回合制策略游戏，于2006年发售。</p><p>本页面提供三国志11原版游戏的下载资源汇总。</p><h3>游戏特色</h3><ul><li>经典的策略玩法</li><li>水墨风格的画面</li><li>丰富的武将系统</li><li>庞大的战役模式</li></ul><h3>下载资源</h3><p>请在下方找到相应的下载链接获取游戏资源。</p>"
+            }
+          ]
+        },
+        {
+          "id": "xuese-2.2",
+          "name": "PK2.2",
+          "cover": "",
+          "description": "三国志11 PK版",
+          "versions": [
+            {
+              "id": "pk2-2-v1",
+              "name": "PK2.2 完整版",
+              "content": "<h2>三国志11 PK2.2</h2><p>三国志11威力加强版（PK版）是原版的增强版本，新增了更多玩法和内容。</p><h3>新增内容</h3><ul><li>新武将</li><li>新剧本</li><li>新设施</li><li>新技能</li></ul>"
+            }
+          ]
+        },
+        {
+          "id": "xuese-6.0sp11",
+          "name": "血色衣冠",
+          "cover": "",
+          "description": "热门历史题材MOD",
+          "versions": [
+            {
+              "id": "xuese-6.0sp11",
+              "name": "血色衣冠6.0sp11",
+              "content": "<h2>血色衣冠 6.0sp11</h2><p>血色衣冠是三国志11的经典MOD之一，以中国历史各朝代为背景。</p><h3>特色</h3><ul><li>历史各朝代武将</li><li>新地图</li><li>新技能系统</li></ul><h3>更新日志</h3><p>sp11版本的更新内容...</p>"
+            },
+            {
+              "id": "xuese-6.0sp10",
+              "name": "血色衣冠6.0sp10",
+              "content": "<h2>血色衣冠 6.0sp10</h2><p>血色衣冠6.0sp10版本说明...</p>"
+            },
+            {
+              "id": "xuese-6.0sp9",
+              "name": "血色衣冠6.0sp9",
+              "content": "<h2>血色衣冠 6.0sp9</h2><p>血色衣冠6.0sp9版本说明...</p>"
+            },
+            {
+              "id": "xuese-5.0sp9",
+              "name": "血色衣冠5.0sp9",
+              "content": "<h2>血色衣冠 5.0sp9</h2><p>血色衣冠5.0sp9版本说明...</p>"
+            }
+          ]
+        },
+        {
+          "id": "dalang-taosha",
+          "name": "大浪淘沙",
+          "cover": "",
+          "description": "三国志题材MOD",
+          "versions": [
+            {
+              "id": "dalang-v1",
+              "name": "大浪淘沙 最新版",
+              "content": "<h2>大浪淘沙</h2><p>大浪淘沙是三国志11的一款优秀MOD作品。</p>"
+            }
+          ]
+        },
+        {
+          "id": "zhen-yingxiong",
+          "name": "真英雄",
+          "cover": "",
+          "description": "英雄荟萃MOD",
+          "versions": [
+            {
+              "id": "zhenyingxiong-v1",
+              "name": "真英雄 最新版",
+              "content": "<h2>真英雄</h2><p>真英雄是三国志11的经典MOD。</p>"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "san9",
+      "name": "三国志9",
+      "mods": [
+        {
+          "id": "san9-original",
+          "name": "三国志9原版",
+          "cover": "",
+          "description": "三国志9原版游戏",
+          "versions": [
+            {
+              "id": "san9-v1",
+              "name": "三国志9 原版",
+              "content": "<h2>三国志9 原版</h2><p>三国志9是光荣公司于2003年发行的一款回合制策略游戏。</p>"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "san14",
+      "name": "三国志14",
+      "mods": [
+        {
+          "id": "san14-original",
+          "name": "三国志14原版",
+          "cover": "",
+          "description": "三国志14原版游戏",
+          "versions": [
+            {
+              "id": "san14-v1",
+              "name": "三国志14 原版",
+              "content": "<h2>三国志14 原版</h2><p>三国志14是光荣公司发行的一款回合制策略游戏。</p>"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "news": [
+    {
+      "id": "news1",
+      "title": "新闻1",
+      "date": "2026-01-15",
+      "content": "<p>新闻1内容...</p>"
+    },
+    {
+      "id": "news2",
+      "title": "新闻2",
+      "date": "2026-01-10",
+      "content": "<p>新闻2内容...</p>"
+    },
+    {
+      "id": "news3",
+      "title": "新闻3",
+      "date": "2026-01-05",
+      "content": "<p>新闻3内容...</p>"
+    },
+    {
+      "id": "news4",
+      "title": "新闻4",
+      "date": "2026-01-01",
+      "content": "<p>新闻4内容...</p>"
+    }
+  ]
+}
