@@ -19,12 +19,8 @@
         <div class="admin-header">
             <h1>内容管理</h1>
             <div class="admin-actions">
-                <button class="admin-btn" onclick="window.location.reload()">刷新</button>
+                <button class="admin-btn" onclick="admin.bindProjectFolder()">📁 绑定项目文件夹</button>
                 <button class="admin-btn save-btn" onclick="admin.saveAll()">💾 保存修改</button>
-                <button class="admin-btn primary" id="exportBtn">导出 JSON</button>
-                <button class="admin-btn" id="importBtn">导入 JSON</button>
-                <input type="file" id="importFile" accept=".json" style="display:none">
-                <button class="admin-btn danger" id="resetBtn">重置为默认</button>
             </div>
         </div>
 
@@ -32,15 +28,13 @@
             <button class="admin-tab active" data-tab="categories">分类管理</button>
             <button class="admin-tab" data-tab="mods">MOD管理</button>
             <button class="admin-tab" data-tab="news">新闻管理</button>
-            <button class="admin-tab" data-tab="data">数据导出/导入</button>
+            <button class="admin-tab" data-tab="data">数据预览</button>
         </div>
 
         <!-- 分类管理 -->
         <section class="admin-section active" id="tab-categories">
             <h2 class="admin-section-title">分类管理</h2>
-            <div class="category-manager" id="categoryManager">
-                <!-- 分类编辑项由 JS 渲染 -->
-            </div>
+            <div class="category-manager" id="categoryManager"></div>
             <div class="add-btn-container">
                 <button class="add-btn" id="addCategoryBtn">+ 添加分类</button>
                 <button class="add-btn save-btn" onclick="admin.saveAll()">💾 保存修改</button>
@@ -54,9 +48,7 @@
                 <select id="modCategorySelect" style="padding:10px 15px; background:var(--bg-card); border:1px solid var(--border-color); border-radius:8px; color:var(--text-primary); font-size:14px;">
                 </select>
             </div>
-            <div class="mod-manager" id="modManager">
-                <!-- MOD编辑项由 JS 渲染 -->
-            </div>
+            <div class="mod-manager" id="modManager"></div>
             <div class="add-btn-container">
                 <button class="add-btn" id="addModBtn">+ 添加MOD</button>
                 <button class="add-btn save-btn" onclick="admin.saveAll()">💾 保存修改</button>
@@ -66,32 +58,25 @@
         <!-- 新闻管理 -->
         <section class="admin-section" id="tab-news">
             <h2 class="admin-section-title">新闻管理</h2>
-            <div class="news-manager" id="newsManager">
-                <!-- 新闻编辑项由 JS 渲染 -->
-            </div>
+            <div class="news-manager" id="newsManager"></div>
             <div class="add-btn-container">
                 <button class="add-btn" id="addNewsBtn">+ 添加新闻</button>
                 <button class="add-btn save-btn" onclick="admin.saveAll()">💾 保存修改</button>
             </div>
         </section>
 
-        <!-- 数据导出/导入 -->
+        <!-- 数据预览 -->
         <section class="admin-section" id="tab-data">
-            <h2 class="admin-section-title">数据管理</h2>
+            <h2 class="admin-section-title">数据预览</h2>
             <div class="json-panel">
-                <p style="margin-bottom: 20px; color: var(--text-secondary);">
-                    <strong style="color: var(--accent-cyan);">说明：</strong>
-                    修改内容后点击"保存"按钮保存到本地浏览器。要将修改应用到网站，请点击"导出 JSON"，
-                    将下载的 data.json 文件上传到 GitHub 仓库的 data/ 目录下，替换原有文件即可。
+                <p style="margin-bottom: 16px; color: var(--text-secondary); font-size: .84rem;">
+                    点击 <strong style="color: var(--accent-cyan);">💾 保存修改</strong> 自动写入 data/data.json 和 images/ 文件夹（首次需允许访问）
                 </p>
-                <div class="admin-actions" style="margin-bottom: 20px;">
-                    <button class="admin-btn primary" onclick="admin.exportData()">导出 JSON</button>
-                    <button class="admin-btn" onclick="document.getElementById('importFileInput').click()">导入 JSON</button>
+                <div class="admin-actions" style="margin-bottom: 16px;">
+                    <button class="admin-btn save-btn" onclick="admin.saveAll()">💾 保存修改</button>
                     <button class="admin-btn danger" onclick="admin.resetData()">重置为默认</button>
-                    <button class="admin-btn primary" onclick="admin.saveAll()">保存所有修改</button>
                 </div>
-                <input type="file" id="importFileInput" accept=".json" style="display:none">
-                <h3 style="margin: 20px 0 10px; color: var(--accent-cyan);">当前数据预览</h3>
+                <h3 style="margin: 16px 0 8px; color: var(--accent-cyan);">当前数据</h3>
                 <div class="json-display" id="jsonPreview"></div>
             </div>
         </section>

@@ -3,6 +3,7 @@ const admin = {
     data: null,
 
     async init() {
+        await this.restoreProjectFolder();  // 先恢复目录句柄，loadData 需要用它直读磁盘
         this.data = await loadData();
         this.bindEvents();
         this.renderAll();
@@ -22,6 +23,7 @@ const admin = {
         // 分类下拉框切换
         const select = document.getElementById('modCategorySelect');
         select.addEventListener('change', () => {
+            this._modCardsExpanded = null;
             this.renderModManager();
         });
 
@@ -36,6 +38,7 @@ const admin = {
             this.data.categories.push(newCat);
             this.renderAll();
             saveData(this.data);
+            this._autoSaveJSON();
             showToast('已添加新分类，已自动保存');
         });
 
@@ -57,6 +60,7 @@ const admin = {
             });
             this.renderAll();
             saveData(this.data);
+            this._autoSaveJSON();
             showToast('已添加新MOD，已自动保存');
         });
 
@@ -71,22 +75,11 @@ const admin = {
             });
             this.renderAll();
             saveData(this.data);
+            this._autoSaveJSON();
             showToast('已添加新新闻，已自动保存');
         });
 
-        // 顶部操作按钮
-        document.getElementById('exportBtn').addEventListener('click', () => this.exportData());
-        document.getElementById('importBtn').addEventListener('click', () => document.getElementById('importFile').click());
-        document.getElementById('importFile').addEventListener('change', (e) => this.importFile(e));
-        document.getElementById('resetBtn').addEventListener('click', () => {
-            if (confirm('确定要重置为默认数据吗？所有修改将丢失。')) {
-                resetData();
-                location.reload();
-            }
-        });
-
-        // 底部导入
-        document.getElementById('importFileInput').addEventListener('change', (e) => this.importFile(e));
+        // 顶部操作按钮（已精简，仅保留内联 onclick）
     },
 
     renderAll() {
@@ -137,6 +130,19 @@ const admin = {
         const category = this.data.categories.find(c => c.id === catId);
         const container = document.getElementById('modManager');
 
+        // 记住当前展开状态，重绘后恢复
+        const expandedState = new Map();
+        if (this._modCardsExpanded) {
+            this._modCardsExpanded.forEach((v, k) => expandedState.set(k, v));
+        } else {
+            container.querySelectorAll('.mod-edit-card').forEach((card, i) => {
+                const body = card.querySelector('.mod-edit-body');
+                if (body && !body.classList.contains('collapsed')) {
+                    expandedState.set(i, true);
+                }
+            });
+        }
+
         if (!category) {
             container.innerHTML = '<div style="padding:20px; text-align:center; color:var(--text-secondary);">请先选择分类</div>';
             return;
@@ -150,18 +156,18 @@ const admin = {
         container.innerHTML = category.mods.map((mod, modIdx) => `
             <div class="mod-edit-card">
                 <div class="mod-edit-header" onclick="admin.toggleMod(${modIdx})">
-                    <h3>${mod.name} <span class="toggle-icon collapsed">▶</span></h3>
+                    <h3>${mod.name} <span class="toggle-icon ${expandedState.get(modIdx) ? '' : 'collapsed'}">${expandedState.get(modIdx) ? '▼' : '▶'}</span></h3>
                     <div class="item-actions" onclick="event.stopPropagation()">
                         <button onclick="admin.deleteMod(${modIdx})" class="delete-btn">删除</button>
                     </div>
                 </div>
-                <div class="mod-edit-body collapsed">
+                <div class="mod-edit-body ${expandedState.get(modIdx) ? '' : 'collapsed'}">
                 <div class="form-group">
                     <label>MOD名称</label>
                     <input type="text" value="${this.escape(mod.name)}" onchange="admin.updateMod(${modIdx}, 'name', this.value)">
                 </div>
                 <div class="form-group">
-                    <label>封面图片（本地路径如 images/cover.jpg，或外部URL，留空显示文字Logo）</label>
+                    <label>封面图片（推荐：放入 images/ 文件夹，填写路径如 images/cover.jpg。上传按钮仅用于临时预览）</label>
                     <div class="cover-input-row">
                         <input type="text" value="${mod.cover || ''}" onchange="admin.updateMod(${modIdx}, 'cover', this.value)" placeholder="images/xxx.jpg 或 https://...">
                         <label class="admin-btn upload-btn">
@@ -245,12 +251,14 @@ const admin = {
         this.renderCategorySelect();
         this.renderJsonPreview();
         saveData(this.data);
+        this._autoSaveJSON();
     },
 
     updateCategoryId(idx, value) {
         this.data.categories[idx].id = value;
         this.renderJsonPreview();
         saveData(this.data);
+        this._autoSaveJSON();
     },
 
     deleteCategory(idx) {
@@ -258,6 +266,7 @@ const admin = {
             this.data.categories.splice(idx, 1);
             this.renderAll();
             saveData(this.data);
+            this._autoSaveJSON();
             showToast('已删除');
         }
     },
@@ -267,9 +276,16 @@ const admin = {
         const catId = document.getElementById('modCategorySelect').value;
         const category = this.data.categories.find(c => c.id === catId);
         category.mods[modIdx][field] = value;
-        this.renderModManager();
+        if (field === 'cover') {
+            const previewImg = document.querySelector(`.mod-edit-card:nth-child(${modIdx + 1}) .cover-preview img`);
+            if (previewImg) {
+                if (value) { previewImg.src = value; previewImg.style.display = ''; }
+                else previewImg.style.display = 'none';
+            }
+        }
         this.renderJsonPreview();
         saveData(this.data);
+        this._autoSaveJSON();
     },
 
     deleteMod(modIdx) {
@@ -279,6 +295,7 @@ const admin = {
             category.mods.splice(modIdx, 1);
             this.renderAll();
             saveData(this.data);
+            this._autoSaveJSON();
             showToast('已删除');
         }
     },
@@ -295,6 +312,7 @@ const admin = {
         this.renderModManager();
         this.renderJsonPreview();
         saveData(this.data);
+        this._autoSaveJSON();
         showToast('已添加版本');
     },
 
@@ -304,6 +322,7 @@ const admin = {
         category.mods[modIdx].versions[verIdx][field] = value;
         this.renderJsonPreview();
         saveData(this.data);
+        this._autoSaveJSON();
     },
 
     deleteVersion(modIdx, verIdx) {
@@ -314,6 +333,7 @@ const admin = {
             this.renderModManager();
             this.renderJsonPreview();
             saveData(this.data);
+            this._autoSaveJSON();
             showToast('已删除');
         }
     },
@@ -323,6 +343,7 @@ const admin = {
         this.data.news[idx][field] = value;
         this.renderJsonPreview();
         saveData(this.data);
+        this._autoSaveJSON();
     },
 
     deleteNews(idx) {
@@ -330,22 +351,129 @@ const admin = {
             this.data.news.splice(idx, 1);
             this.renderAll();
             saveData(this.data);
+            this._autoSaveJSON();
             showToast('已删除');
         }
     },
 
-    // ---- 数据导出/导入 ----
-    saveAll() {
+    // ---- 数据保存（下载 data.json + 所有图片） ----
+
+    // 绑定文件夹后自动防抖写入 data.json，避免清缓存丢失
+    _autoSaveJSON() {
+        if (!this.dataDirHandle) return;
+        if (this._autoSaveTimer) clearTimeout(this._autoSaveTimer);
+        this._autoSaveTimer = setTimeout(async () => {
+            const jsonBlob = new Blob([JSON.stringify(this.data, null, 2)], { type: 'application/json' });
+            try {
+                const fileHandle = await this.dataDirHandle.getFileHandle('data.json', { create: true });
+                const writable = await fileHandle.createWritable();
+                await writable.write(jsonBlob);
+                await writable.close();
+            } catch (e) { /* 静默失败，手动保存时有提示 */ }
+        }, 800);
+    },
+    async saveAll() {
+        if (this._autoSaveTimer) clearTimeout(this._autoSaveTimer);
         this.syncAllInputs();
         saveData(this.data);
-        showToast('已保存到本地浏览器');
+
+        if (this.dataDirHandle) {
+            // 直接写入本地文件夹
+            await this.writeToLocal();
+        } else {
+            // 未绑定文件夹，fallback 到下载方式
+            const jsonBlob = new Blob([JSON.stringify(this.data, null, 2)], { type: 'application/json' });
+            this.triggerDownload(jsonBlob, 'data.json');
+            this.downloadBase64Images();
+            showToast('已下载 data.json 和封面图片，请拖入对应文件夹后 git push');
+        }
+        this.renderJsonPreview();
     },
 
-    exportData() {
-        this.syncAllInputs();
+    async writeToLocal() {
+        // 写入 data.json
+        const jsonBlob = new Blob([JSON.stringify(this.data, null, 2)], { type: 'application/json' });
+        const dataFileHandle = await this.dataDirHandle.getFileHandle('data.json', { create: true });
+        const dataWritable = await dataFileHandle.createWritable();
+        await dataWritable.write(jsonBlob);
+        await dataWritable.close();
+
+        // 写入 base64 封面图到 images/ 文件夹
+        let imageCount = 0;
+        for (const cat of this.data.categories) {
+            if (!cat.mods) continue;
+            for (const mod of cat.mods) {
+                if (!mod.cover || !mod.cover.startsWith('data:image/')) continue;
+                const match = mod.cover.match(/^data:image\/(\w+)/);
+                const ext = match ? match[1].replace('jpeg', 'jpg') : 'jpg';
+                const safeName = (mod.name || 'cover').replace(/[\/\\:*?"<>|]/g, '_') + '.' + ext;
+                const arr = mod.cover.split(',');
+                const mime = arr[0].match(/data:(image\/\w+)/)[1];
+                const blob = this.base64ToBlob(arr[1], mime);
+
+                if (this.imagesDirHandle) {
+                    try {
+                        const imgFileHandle = await this.imagesDirHandle.getFileHandle(safeName, { create: true });
+                        const imgWritable = await imgFileHandle.createWritable();
+                        await imgWritable.write(blob);
+                        await imgWritable.close();
+                    } catch (e) {
+                        this.triggerDownload(blob, safeName);
+                    }
+                } else {
+                    this.triggerDownload(blob, safeName);
+                }
+                mod.cover = 'images/' + safeName;
+                imageCount++;
+            }
+        }
+        // 更新封面路径后重新写一次 data.json
+        const finalJsonBlob = new Blob([JSON.stringify(this.data, null, 2)], { type: 'application/json' });
+        const finalFileHandle = await this.dataDirHandle.getFileHandle('data.json', { create: true });
+        const finalWritable = await finalFileHandle.createWritable();
+        await finalWritable.write(finalJsonBlob);
+        await finalWritable.close();
+
         saveData(this.data);
-        exportJSON(this.data);
-        showToast('数据已导出为 data.json');
+        showToast(`已保存到本地：data/data.json${imageCount > 0 ? ' + ' + imageCount + ' 张封面图' : ''}`);
+    },
+
+    downloadBase64Images() {
+        this.data.categories.forEach(cat => {
+            if (!cat.mods) return;
+            cat.mods.forEach(mod => {
+                if (!mod.cover || !mod.cover.startsWith('data:image/')) return;
+                const match = mod.cover.match(/^data:image\/(\w+)/);
+                const ext = match ? match[1].replace('jpeg', 'jpg') : 'jpg';
+                const safeName = (mod.name || 'cover').replace(/[\/\\:*?"<>|]/g, '_') + '.' + ext;
+                const arr = mod.cover.split(',');
+                const mime = arr[0].match(/data:(image\/\w+)/)[1];
+                const blob = this.base64ToBlob(arr[1], mime);
+                this.triggerDownload(blob, safeName);
+                mod.cover = 'images/' + safeName;
+            });
+        });
+    },
+
+    base64ToBlob(base64, mime) {
+        const bytes = Uint8Array.from(atob(base64), c => c.charCodeAt(0));
+        return new Blob([bytes], { type: mime });
+    },
+
+    triggerDownload(blob, filename) {
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = filename;
+        a.click();
+        setTimeout(() => URL.revokeObjectURL(a.href), 200);
+    },
+
+    resetData() {
+        if (confirm('确定要重置为默认数据吗？所有修改将丢失，需要重新加载页面。')) {
+            resetData();
+            showToast('已重置，请刷新页面');
+            setTimeout(() => location.reload(), 1000);
+        }
     },
 
     // 同步所有输入框的当前值到 data（防止 onchange 未触发）
@@ -383,15 +511,6 @@ const admin = {
         } catch (e) {
             showToast('导入失败：' + e.message, true);
         }
-        event.target.value = '';
-    },
-
-    resetData() {
-        if (confirm('确定要重置为默认数据吗？所有修改将丢失，需要重新加载页面。')) {
-            resetData();
-            showToast('已重置，请刷新页面');
-            setTimeout(() => location.reload(), 1000);
-        }
     },
 
     // 工具函数
@@ -421,25 +540,124 @@ const admin = {
             icon.classList.add('collapsed');
             icon.textContent = '▶';
         }
+        // 记住展开状态，防止重绘时丢失
+        if (!this._modCardsExpanded) this._modCardsExpanded = new Map();
+        this._modCardsExpanded.set(modIdx, isCollapsed);
     },
 
-    // 封面图片上传处理：转为 base64 暂存到 localStorage
-    handleCoverUpload(modIdx, inputEl) {
+    // 绑定项目根文件夹（一次绑定，保存数据和图片都直接写入）
+    async bindProjectFolder() {
+        if (!window.showDirectoryPicker) {
+            showToast('需要 Chrome/Edge 浏览器才支持直接保存到本地文件夹', true);
+            return;
+        }
+        try {
+            this.rootDirHandle = await window.showDirectoryPicker({ mode: 'readwrite' });
+            await this.setupSubDirHandles();
+            await this.storeFolderHandle();
+            const name = this.rootDirHandle.name;
+            showToast('已绑定项目文件夹：' + name + ' — 保存和上传都直接写入本地！');
+        } catch (e) {
+            if (e.name !== 'AbortError') {
+                showToast('绑定失败：' + e.message, true);
+            }
+        }
+    },
+
+    async setupSubDirHandles() {
+        try { this.dataDirHandle = await this.rootDirHandle.getDirectoryHandle('data'); }
+        catch { showToast('未找到 data/ 子目录，将使用下载方式导出 JSON', true); }
+        try { this.imagesDirHandle = await this.rootDirHandle.getDirectoryHandle('images'); }
+        catch { showToast('未找到 images/ 子目录，上传图片将触发下载', true); }
+        // 暴露给 data.js，使 loadData() 可直接从磁盘读取
+        window._dataDirHandle = this.dataDirHandle;
+    },
+
+    // 将目录句柄持久化到 IndexedDB，下次打开页面自动恢复
+    async storeFolderHandle() {
+        return new Promise((resolve, reject) => {
+            const req = indexedDB.open('san11-admin', 1);
+            req.onupgradeneeded = () => {
+                req.result.createObjectStore('handles');
+            };
+            req.onsuccess = () => {
+                const tx = req.result.transaction('handles', 'readwrite');
+                tx.objectStore('handles').put(this.rootDirHandle, 'rootDir');
+                tx.oncomplete = () => { req.result.close(); resolve(); };
+                tx.onerror = () => reject(tx.error);
+            };
+            req.onerror = () => reject(req.error);
+        });
+    },
+
+    // 页面加载时自动恢复之前绑定的文件夹
+    async restoreProjectFolder() {
+        if (!window.showDirectoryPicker) return;
+        const handle = await new Promise((resolve) => {
+            const req = indexedDB.open('san11-admin', 1);
+            req.onupgradeneeded = () => {
+                req.result.createObjectStore('handles');
+            };
+            req.onsuccess = () => {
+                const tx = req.result.transaction('handles', 'readonly');
+                const getReq = tx.objectStore('handles').get('rootDir');
+                getReq.onsuccess = () => { req.result.close(); resolve(getReq.result); };
+                getReq.onerror = () => { req.result.close(); resolve(null); };
+            };
+            req.onerror = () => resolve(null);
+        });
+        if (!handle) return;
+
+        // 检查权限是否仍然有效
+        const opts = { mode: 'readwrite' };
+        const perm = await handle.queryPermission(opts);
+        if (perm === 'granted') {
+            this.rootDirHandle = handle;
+            await this.setupSubDirHandles();
+        } else {
+            // 尝试重新请求权限（需用户手势，这里静默失败）
+            this.rootDirHandle = null;
+        }
+    },
+
+    // 封面图片上传：若已绑定文件夹则直接写入 images/，否则 base64 暂存
+    async handleCoverUpload(modIdx, inputEl) {
         const file = inputEl.files[0];
         if (!file) return;
-        const reader = new FileReader();
-        reader.onload = (e) => {
-            const base64Url = e.target.result;
-            const catId = document.getElementById('modCategorySelect').value;
-            const category = this.data.categories.find(c => c.id === catId);
-            category.mods[modIdx].cover = base64Url;
-            this.renderModManager();
-            this.renderJsonPreview();
-            saveData(this.data);
-            showToast('封面图片已上传（base64），发布时建议替换为本地路径');
-        };
-        reader.readAsDataURL(file);
-    }
+
+        const catId = document.getElementById('modCategorySelect').value;
+        const category = this.data.categories.find(c => c.id === catId);
+
+        if (this.imagesDirHandle) {
+            // 已绑定文件夹：直接写入 images/ 目录
+            try {
+                const ext = file.name.split('.').pop() || 'jpg';
+                const safeName = (category.mods[modIdx].name || 'cover').replace(/[\/\\:*?"<>|]/g, '_') + '.' + ext;
+                const imgFileHandle = await this.imagesDirHandle.getFileHandle(safeName, { create: true });
+                const writable = await imgFileHandle.createWritable();
+                await writable.write(file);
+                await writable.close();
+                category.mods[modIdx].cover = 'images/' + safeName;
+                saveData(this.data);
+                this.renderModManager();
+                this.renderJsonPreview();
+                showToast('图片已保存到 images/' + safeName);
+            } catch (e) {
+                showToast('写入图片失败：' + e.message, true);
+            }
+        } else {
+            // 未绑定文件夹：base64 暂存到 localStorage
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                category.mods[modIdx].cover = e.target.result;
+                this.renderModManager();
+                this.renderJsonPreview();
+                saveData(this.data);
+                showToast('图片已加载（预览中），绑定项目文件夹后保存可直接写入本地');
+            };
+            reader.readAsDataURL(file);
+        }
+    },
 };
 
 // 挂到 window，使内联 onchange/onclick 能访问 admin

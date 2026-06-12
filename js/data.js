@@ -1,6 +1,29 @@
 // 数据管理模块 - 负责加载、保存数据
 const STORAGE_KEY = 'san11_site_data';
 
+// 尝试从 IndexedDB 恢复目录句柄（无需用户手势）
+async function _restoreFolderHandle() {
+    if (window._dataDirHandle || !window.showDirectoryPicker) return;
+    try {
+        const handle = await new Promise((resolve) => {
+            const req = indexedDB.open('san11-admin', 1);
+            req.onupgradeneeded = () => { req.result.createObjectStore('handles'); };
+            req.onsuccess = () => {
+                const tx = req.result.transaction('handles', 'readonly');
+                const getReq = tx.objectStore('handles').get('rootDir');
+                getReq.onsuccess = () => { req.result.close(); resolve(getReq.result); };
+                getReq.onerror = () => { req.result.close(); resolve(null); };
+            };
+            req.onerror = () => resolve(null);
+        });
+        if (!handle) return;
+        const perm = await handle.queryPermission({ mode: 'readwrite' });
+        if (perm === 'granted') {
+            try { window._dataDirHandle = await handle.getDirectoryHandle('data'); } catch (e) {}
+        }
+    } catch (e) { /* 静默 */ }
+}
+
 // 修复被 escape() 双重转义的内容（&lt; → <, &gt; → > 等）
 function unescapeContent(data) {
     if (!data || !data.categories) return data;
@@ -30,31 +53,69 @@ function unescapeContent(data) {
 
 // 从 JSON 文件加载数据（或从 localStorage 加载）
 async function loadData() {
-    // 首先尝试从 localStorage 加载（后台编辑的数据）
-    const localData = localStorage.getItem(STORAGE_KEY);
-    if (localData) {
+    await _restoreFolderHandle();  // 尝试恢复目录句柄，使 file:// 下也能直读磁盘
+
+    // 1. 优先 fetch data.json（http:// 协议下可用）
+    try {
+        const url = 'data/data.json?_t=' + Date.now();
+        const response = await fetch(url, { cache: 'no-store' });
+        console.log('[loadData] fetch status:', response.status);
+        if (response.ok) {
+            const data = await response.json();
+            console.log('[loadData] fetch 成功，categories:', data.categories?.length, 'news:', data.news?.length);
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+            return data;
+        }
+    } catch (e) {
+        console.warn('[loadData] fetch 失败:', e.message);
+    }
+
+    // 2. 通过 File System Access API 直读磁盘（file:// 或未启动 http server 时）
+    if (window._dataDirHandle) {
         try {
-            const data = JSON.parse(localData);
-            return unescapeContent(data);
+            const fileHandle = await window._dataDirHandle.getFileHandle('data.json');
+            const file = await fileHandle.getFile();
+            const text = await file.text();
+            const data = JSON.parse(text);
+            console.log('[loadData] FileSystemAPI 成功，categories:', data.categories?.length, 'news:', data.news?.length);
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+            return data;
         } catch (e) {
-            console.error('解析本地数据失败:', e);
+            console.error('[loadData] FileSystemAPI 失败:', e.message);
         }
     }
 
-    // 如果 localStorage 没有数据，从 JSON 文件加载
-    try {
-        const response = await fetch('data/data.json');
-        if (!response.ok) throw new Error('加载失败');
-        const data = await response.json();
-        return data;
-    } catch (error) {
-        console.error('加载数据失败:', error);
-        // 返回默认数据
-        return {
-            categories: [{ id: 'san11', name: '三国志11', mods: [] }],
-            news: []
-        };
+    // 3. Fallback: localStorage
+    const localData = localStorage.getItem(STORAGE_KEY);
+    console.log('[loadData] localStorage 有数据:', !!localData);
+    if (localData) {
+        try {
+            const data = JSON.parse(localData);
+            console.log('[loadData] 使用 localStorage，categories:', data.categories?.length);
+            return unescapeContent(data);
+        } catch (e) {
+            console.error('[loadData] localStorage JSON 解析失败:', e);
+        }
     }
+
+    // 4. 最终默认
+    console.warn('[loadData] 使用默认空数据');
+    if (location.protocol === 'file:') {
+        // file:// 协议下无法加载，显示醒目提示
+        const banner = document.createElement('div');
+        banner.style.cssText = 'background:#3C2F1E;color:#F0D78C;padding:18px 24px;text-align:center;font-size:15px;line-height:1.8;border-bottom:2px solid #B8860B;';
+        banner.innerHTML = `
+            <strong>无法加载数据</strong> — 你直接打开了 HTML 文件（file:// 协议），浏览器安全策略禁止读取本地 JSON。<br>
+            请在项目目录下运行 <code style="background:#4A3B28;padding:2px 8px;border-radius:4px;">python -m http.server 8000</code>，
+            然后访问 <code style="background:#4A3B28;padding:2px 8px;border-radius:4px;">http://localhost:8000/</code><br>
+            或者在 <a href="admin.html" style="color:#B8860B;">后台管理</a> 中点击"📁 绑定项目文件夹"。
+        `;
+        document.body.prepend(banner);
+    }
+    return {
+        categories: [{ id: 'san11', name: '三国志11', mods: [] }],
+        news: []
+    };
 }
 
 // 保存数据到 localStorage（仅后台使用）
