@@ -14,15 +14,16 @@ async function initPage() {
     // 如果URL没有mod参数，使用第一个mod
     currentModId = params.mod || (category.mods && category.mods[0] && category.mods[0].id);
 
+    renderCategories();
+    renderNews();
+
     if (!currentModId) {
         document.getElementById('contentArea').innerHTML = '<div style="padding:40px; text-align:center; color:var(--text-secondary);">未找到对应mod</div>';
         return;
     }
 
-    renderCategories();
     renderBreadcrumb();
     renderVersions();
-    renderNews();
 }
 
 // 渲染分类导航
