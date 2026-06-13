@@ -87,10 +87,17 @@ function renderNews() {
     const list = document.getElementById('newsList');
     if (!siteData.news || siteData.news.length === 0) return;
     list.innerHTML = siteData.news.slice(0, 10).map(news => `
-        <div class="news-item">
+        <div class="news-item" data-news-id="${news.id}">
             <span class="news-item-title">${news.title}</span>
         </div>
     `).join('');
+
+    list.querySelectorAll('.news-item').forEach(el => {
+        el.addEventListener('click', () => {
+            const news = siteData.news.find(n => n.id === el.dataset.newsId);
+            if (news) openNewsDetail(news.title, news.content);
+        });
+    });
 }
 
 if (document.readyState === 'loading') {

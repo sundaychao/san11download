@@ -176,6 +176,33 @@ function getUrlParams() {
     return params;
 }
 
+// 打开新闻详情弹窗
+function openNewsDetail(title, content) {
+    const overlay = document.createElement('div');
+    overlay.className = 'news-overlay';
+    overlay.innerHTML = `
+        <div class="news-modal">
+            <button class="news-modal-close">&times;</button>
+            <h2 class="news-modal-title">${title}</h2>
+            <div class="news-modal-body">${content || '<p style="color:var(--text-secondary);">暂无内容</p>'}</div>
+        </div>
+    `;
+    document.body.appendChild(overlay);
+    document.body.style.overflow = 'hidden';
+
+    const close = () => {
+        overlay.remove();
+        document.body.style.overflow = '';
+    };
+    overlay.querySelector('.news-modal-close').addEventListener('click', close);
+    overlay.addEventListener('click', (e) => {
+        if (e.target === overlay) close();
+    });
+    document.addEventListener('keydown', function esc(e) {
+        if (e.key === 'Escape') { close(); document.removeEventListener('keydown', esc); }
+    });
+}
+
 // 显示提示消息
 function showToast(message, isError = false) {
     const toast = document.createElement('div');

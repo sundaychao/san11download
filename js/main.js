@@ -111,6 +111,13 @@ function renderNews() {
             <span class="news-item-title">${news.title}</span>
         </div>
     `).join('');
+
+    list.querySelectorAll('.news-item').forEach(el => {
+        el.addEventListener('click', () => {
+            const news = siteData.news.find(n => n.id === el.dataset.newsId);
+            if (news) openNewsDetail(news.title, news.content);
+        });
+    });
 }
 
 // 搜索功能
