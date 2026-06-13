@@ -24,6 +24,7 @@ async function initPage() {
 
     renderBreadcrumb();
     renderVersions();
+    initSearch();
 }
 
 // 渲染分类导航
@@ -64,7 +65,7 @@ function renderBreadcrumb() {
 }
 
 // 渲染版本列表
-function renderVersions() {
+function renderVersions(filterKeyword = '') {
     const category = siteData.categories.find(c => c.id === currentCategoryId);
     const mod = category.mods.find(m => m.id === currentModId);
     const list = document.getElementById('versionList');
@@ -74,9 +75,21 @@ function renderVersions() {
         return;
     }
 
+    let versions = mod.versions;
+    if (filterKeyword) {
+        const keyword = filterKeyword.toLowerCase();
+        versions = versions.filter(v => v.name.toLowerCase().includes(keyword));
+    }
+
+    if (versions.length === 0) {
+        list.innerHTML = `<h2 style="color:var(--accent-cyan); font-size:22px; margin-bottom:24px; padding-bottom:16px; border-bottom:1px solid var(--border-color);">${mod.name}</h2>
+        <div style="padding:40px; text-align:center; color:var(--text-secondary);">未找到匹配的版本</div>`;
+        return;
+    }
+
     list.innerHTML = `
         <h2 style="color:var(--accent-cyan); font-size:22px; margin-bottom:24px; padding-bottom:16px; border-bottom:1px solid var(--border-color);">${mod.name}</h2>
-        ${mod.versions.map((version, idx) => `
+        ${versions.map((version, idx) => `
             <div class="version-item" data-version-id="${version.id}">
                 <div class="version-title">${version.name}</div>
                 <div class="version-arrow">→</div>
@@ -84,12 +97,18 @@ function renderVersions() {
         `).join('')}
     `;
 
-    // 绑定点击事件
     list.querySelectorAll('.version-item').forEach(el => {
         el.addEventListener('click', () => {
-            const versionId = el.dataset.versionId;
-            window.location.href = `detail.html?cat=${currentCategoryId}&mod=${currentModId}&version=${versionId}`;
+            window.location.href = `detail.html?cat=${currentCategoryId}&mod=${currentModId}&version=${el.dataset.versionId}`;
         });
+    });
+}
+
+function initSearch() {
+    const searchInput = document.getElementById('searchInput');
+    if (!searchInput) return;
+    searchInput.addEventListener('input', (e) => {
+        renderVersions(e.target.value);
     });
 }
 
