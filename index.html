@@ -1,11 +1,51 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
+    <base href="/san11download/">
     <meta charset="UTF-8">
-    <title>HTML测试页面</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>三国志下载资源汇总</title>
+    <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-    <h1>测试标题</h1>
-    <p>这是最简单的HTML测试代码，浏览器能正常渲染就代表环境正常</p>
+    <header class="site-header">
+        <div class="site-title">三国志下载资源汇总</div>
+        <nav class="nav-links">
+            <a href="index.html" class="active">首页</a>
+        </nav>
+    </header>
+
+    <main class="main-container">
+        <div class="search-section">
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="搜索mod、版本、资源...">
+                <span class="search-icon">🔍</span>
+            </div>
+        </div>
+
+        <aside class="category-nav" id="categoryNav">
+            <!-- 分类由 JS 渲染 -->
+        </aside>
+
+        <section class="content-area" id="contentArea">
+            <div class="mod-grid" id="modGrid">
+                <!-- mod卡片由 JS 渲染 -->
+            </div>
+        </section>
+
+        <aside class="news-sidebar" id="newsSidebar">
+            <div class="news-title">游戏新闻</div>
+            <div class="news-list" id="newsList">
+                <!-- 新闻由 JS 渲染 -->
+            </div>
+        </aside>
+    </main>
+
+    <footer class="site-footer">
+        &copy; 2026 三国志下载资源汇总 | GitHub Pages 托管
+    </footer>
+
+    <script src="js/data.js"></script>
+    <script src="js/main.js"></script>
 </body>
 </html>
