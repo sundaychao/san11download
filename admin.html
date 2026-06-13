@@ -1,0 +1,89 @@
+@ -1,88 +0,0 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>后台管理 - 三国志下载资源汇总</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <header class="site-header">
+        <div class="site-title">三国志下载资源汇总 - 后台管理</div>
+        <nav class="nav-links">
+            <a href="index.html">返回首页</a>
+            <a href="admin.html" class="active">后台管理</a>
+        </nav>
+    </header>
+
+    <div class="admin-container">
+        <div class="admin-header">
+            <h1>内容管理</h1>
+            <div class="admin-actions">
+                <button class="admin-btn" onclick="admin.bindProjectFolder()">📁 绑定项目文件夹</button>
+                <button class="admin-btn save-btn" onclick="admin.saveAll()">💾 保存修改</button>
+            </div>
+        </div>
+
+        <div class="admin-tabs">
+            <button class="admin-tab active" data-tab="categories">分类管理</button>
+            <button class="admin-tab" data-tab="mods">MOD管理</button>
+            <button class="admin-tab" data-tab="news">新闻管理</button>
+            <button class="admin-tab" data-tab="data">数据预览</button>
+        </div>
+
+        <!-- 分类管理 -->
+        <section class="admin-section active" id="tab-categories">
+            <h2 class="admin-section-title">分类管理</h2>
+            <div class="category-manager" id="categoryManager"></div>
+            <div class="add-btn-container">
+                <button class="add-btn" id="addCategoryBtn">+ 添加分类</button>
+                <button class="add-btn save-btn" onclick="admin.saveAll()">💾 保存修改</button>
+            </div>
+        </section>
+
+        <!-- MOD管理 -->
+        <section class="admin-section" id="tab-mods">
+            <h2 class="admin-section-title">MOD管理 - 按分类查看</h2>
+            <div style="margin-bottom: 20px;">
+                <select id="modCategorySelect" style="padding:10px 15px; background:var(--bg-card); border:1px solid var(--border-color); border-radius:8px; color:var(--text-primary); font-size:14px;">
+                </select>
+            </div>
+            <div class="mod-manager" id="modManager"></div>
+            <div class="add-btn-container">
+                <button class="add-btn" id="addModBtn">+ 添加MOD</button>
+                <button class="add-btn save-btn" onclick="admin.saveAll()">💾 保存修改</button>
+            </div>
+        </section>
+
+        <!-- 新闻管理 -->
+        <section class="admin-section" id="tab-news">
+            <h2 class="admin-section-title">新闻管理</h2>
+            <div class="news-manager" id="newsManager"></div>
+            <div class="add-btn-container">
+                <button class="add-btn" id="addNewsBtn">+ 添加新闻</button>
+                <button class="add-btn save-btn" onclick="admin.saveAll()">💾 保存修改</button>
+            </div>
+        </section>
+
+        <!-- 数据预览 -->
+        <section class="admin-section" id="tab-data">
+            <h2 class="admin-section-title">数据预览</h2>
+            <div class="json-panel">
+                <p style="margin-bottom: 16px; color: var(--text-secondary); font-size: .84rem;">
+                    点击 <strong style="color: var(--accent-cyan);">💾 保存修改</strong> 自动写入 data/data.json 和 images/ 文件夹（首次需允许访问）
+                </p>
+                <div class="admin-actions" style="margin-bottom: 16px;">
+                    <button class="admin-btn save-btn" onclick="admin.saveAll()">💾 保存修改</button>
+                    <button class="admin-btn danger" onclick="admin.resetData()">重置为默认</button>
+                </div>
+                <h3 style="margin: 16px 0 8px; color: var(--accent-cyan);">当前数据</h3>
+                <div class="json-display" id="jsonPreview"></div>
+            </div>
+        </section>
+    </div>
+
+    <script src="js/data.js"></script>
+    <script src="js/admin.js"></script>
+</body>
+</html>

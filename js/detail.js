@@ -42,7 +42,7 @@ function renderBreadcrumb() {
     document.getElementById('breadcrumb').innerHTML = `
         <a href="index.html">首页</a>
         <span class="breadcrumb-separator">></span>
-        <a href="mod.html?cat=${currentCategoryId}&mod=${currentModId}" style="color:var(--text-secondary);">${category.name}</a>
+        <a href="index.html?cat=${currentCategoryId}">${category.name}</a>
         <span class="breadcrumb-separator">></span>
         <a href="mod.html?cat=${currentCategoryId}&mod=${currentModId}" style="color:var(--text-secondary);">${mod.name}</a>
         <span class="breadcrumb-separator">></span>
