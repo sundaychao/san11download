@@ -58,7 +58,7 @@
         {
           "id": "mod-1781349729203-rbo0r1w5r",
           "name": "三国志11原版",
-          "cover": "images/三国志11威力加强版.png",
+          "cover": "images/三国志11威力加强版.jpg",
           "description": "最原始的版本",
           "versions": [
             {
@@ -102,7 +102,7 @@
             {
               "id": "ver-1781350009560-poqy995ri",
               "name": "san11原版",
-              "content": "下载地址：https://pan.baidu.com/share/init?surl=v3R7psnBkonLsuq5EmfmnQ&pwd=e34u"
+              "content": "下载地址：https://pan.baidu.com/share/init?surl=v3R7psnBkonLsuq5EmfmnQ&pwd=e34u\n\n天翼网盘：https://cloud.189.cn/web/share?code=jI3a6bM7Nz6j  （访问码：8tyb）"
             }
           ]
         }
@@ -111,32 +111,116 @@
     {
       "id": "cat-1781350580149-917t9yzgc",
       "name": "三国志7",
-      "mods": []
+      "mods": [
+        {
+          "id": "mod-1781351222608-snbppmx0d",
+          "name": "原版",
+          "cover": "images/原版.jpg",
+          "description": "原始版本",
+          "versions": [
+            {
+              "id": "ver-1781351242687-un1jie2sj",
+              "name": "三国志7威力加强版",
+              "content": "百度网盘: https://pan.baidu.com/share/init?surl=PnMxvixL0dWIM0l5wmbCbg&pwd=zmde\n\n夸克网盘：https://pan.quark.cn/s/24d25ed76488#/list/share\n\n迅雷网盘：https://pan.xunlei.com/s/VOsRpFp1eqXUppDvbSQikv6cA1?pwd=78ip"
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "cat-1781350606952-l6c5xwo12",
       "name": "三国志10",
-      "mods": []
+      "mods": [
+        {
+          "id": "mod-1781351012572-vj7ui3vlg",
+          "name": "原版",
+          "cover": "images/原版.jpg",
+          "description": "角色扮演玩法",
+          "versions": [
+            {
+              "id": "ver-1781351069090-mwv8xpb7b",
+              "name": "san10原版",
+              "content": "百度网盘：https://pan.baidu.com/share/init?surl=DAEnX-G6tVL6v4aiYseQVQ&pwd=sbb4\n\n夸克网盘：https://pan.quark.cn/s/43595d133f4b#/list/share\n\n迅雷网盘：https://pan.xunlei.com/s/VOsRgm8_I8I57wBLetEuuhVUA1?pwd=8j7r"
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "cat-1781350631222-23leyus7x",
       "name": "三国志8",
-      "mods": []
+      "mods": [
+        {
+          "id": "mod-1781351400312-hjnhlcim4",
+          "name": "三国志8",
+          "cover": "images/三国志8.jpg",
+          "description": "重置版",
+          "versions": [
+            {
+              "id": "ver-1781351416824-av1wvu174",
+              "name": "三国志8重制版",
+              "content": "百度网盘：https://pan.baidu.com/share/init?surl=4qTFoJzQZ7M2hgIUYLsWSA&pwd=g9ea  提取码:g9ea\n\n夸克网盘：https://pan.quark.cn/s/86b1a2b03506#/list/share"
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "cat-1781350643526-rlp6vum1t",
       "name": "三国志12",
-      "mods": []
+      "mods": [
+        {
+          "id": "mod-1781351587748-bxv9fxq2s",
+          "name": "三国志12",
+          "cover": "images/三国志12.jpg",
+          "description": "原版",
+          "versions": [
+            {
+              "id": "ver-1781351635822-ttu2tc7u0",
+              "name": "新版本",
+              "content": "百度网盘:https://pan.baidu.com/share/init?surl=S9pB_OU1xWgyuHHGsVX0Dw&pwd=mqe8\n\n夸克网盘：https://pan.quark.cn/s/c6fbd95a5a35#/list/share\n\n迅雷网盘：https://pan.xunlei.com/s/VOsRfBDcB0XcwCW23njMJNnnA1?pwd=6ynx"
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "cat-1781350667399-88ouds8jd",
       "name": "三国志13",
-      "mods": []
+      "mods": [
+        {
+          "id": "mod-1781351707444-39j74brit",
+          "name": "三国志13威力加强版",
+          "cover": "images/三国志13威力加强版.jpg",
+          "description": "原版",
+          "versions": [
+            {
+              "id": "ver-1781351778013-moe39ly5o",
+              "name": "三国志13威力加强版",
+              "content": "百度网盘: https://pan.baidu.com/share/init?surl=_TqMUf6LCxUcz04Y-sknoQ&pwd=y3u7"
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "cat-1781350684562-z1jrqyz4g",
       "name": "三国志曹操传",
-      "mods": []
+      "mods": [
+        {
+          "id": "mod-1781352009083-53jx9h0vt",
+          "name": "三国志曹操传",
+          "cover": "images/三国志曹操传.jpg",
+          "description": "老板",
+          "versions": [
+            {
+              "id": "ver-1781352142437-krp5lxi58",
+              "name": "三国志曹操传",
+              "content": "https://pan.baidu.com/s/1v6iLbjNv4nLeVGwpM_AYoA#list/path=%2F"
+            }
+          ]
+        }
+      ]
     }
   ],
   "news": [

@@ -99,8 +99,7 @@ function renderNews() {
     if (!siteData.news || siteData.news.length === 0) return;
     list.innerHTML = siteData.news.slice(0, 10).map(news => `
         <div class="news-item">
-            <div class="news-item-title">${news.title}</div>
-            <div class="news-item-date">${news.date || ''}</div>
+            <span class="news-item-title">${news.title}</span>
         </div>
     `).join('');
 }

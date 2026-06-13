@@ -458,7 +458,7 @@ a:hover {
     font-size: .85rem;
     font-weight: 700;
     color: var(--accent-cyan);
-    margin-bottom: 16px;
+    margin-bottom: 14px;
     padding-bottom: 10px;
     border-bottom: 1px solid var(--border-color);
     letter-spacing: .08em;
@@ -467,23 +467,18 @@ a:hover {
 .news-list {
     display: flex;
     flex-direction: column;
-    gap: 2px;
+    gap: 6px;
 }
 
 .news-item {
-    padding: 10px 8px;
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    padding: 8px 10px;
     border-radius: 6px;
     cursor: pointer;
     transition: all .2s;
     border: 1px solid transparent;
-}
-
-.news-item::before {
-    content: '▸';
-    color: var(--accent-cyan);
-    font-size: .65rem;
-    margin-right: 6px;
-    opacity: .5;
 }
 
 .news-item:hover {
@@ -491,19 +486,25 @@ a:hover {
     border-color: var(--border-color);
 }
 
+.news-item-date {
+    flex-shrink: 0;
+    font-size: .7rem;
+    font-family: monospace;
+    color: var(--accent-cyan);
+    background: rgba(184, 134, 11, .1);
+    padding: 2px 7px;
+    border-radius: 4px;
+    line-height: 1.6;
+}
+
 .news-item-title {
     font-size: .82rem;
     color: var(--text-primary);
     font-weight: 500;
-    margin-bottom: 3px;
     line-height: 1.4;
-}
-
-.news-item-date {
-    font-size: .72rem;
-    color: var(--text-secondary);
-    font-family: monospace;
-    margin-left: 14px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 /* ========== 页脚 ========== */
